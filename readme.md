@@ -1,6 +1,8 @@
 这是一个自学编程一坤年的小菜鸡做的技术笔记，已经绑定GitHub远程仓库。
 
-怎么提交？
+远程仓库地址：https://github.com/mundo-wang/technical-notes
+
+怎么提交？（下面的图是旧版的，看的时候需要注意）
 
 <img src="image/image-20231116134454160-1700654015505.png" alt="image-20231116134454160" style="zoom:50%;" />
 
@@ -19,8 +21,6 @@ git push
 ```
 
 这样就可以把本地修改推到远程了，然后可以去远程仓库看一下有没有更新成功。
-
-远程仓库地址：https://gitee.com/mundo-wang/mundos-personal-notes
 
 如果在git bash窗口不小心把密码输错了，或者是把远程分支的密码改了，在git push时会提示错误，怎么处理？
 
@@ -43,7 +43,7 @@ git push
 这里的地址就是你要拉取的远程分支的地址，自行去gitee复制。
 
 ```shell
-git clone https://gitee.com/mundo-wang/mundos-personal-notes
+git clone https://github.com/mundo-wang/technical-notes.git
 ```
 
 拉取后，会有这样的一个文件夹，默认它就是远程仓库的名字。
