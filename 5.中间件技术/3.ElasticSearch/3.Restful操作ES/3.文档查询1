@@ -1,0 +1,410 @@
+上节只是讲了文档查询的基本操作，例如查询所有文档，与查询指定文档的操作，这里我们讲一下更多操作。
+
+我们先多添加几条文档进去，然后使用`http://10.40.18.40:9200/shopping/_search`查看所有文档。
+
+```json
+{
+    "took": 2,
+    "timed_out": false,
+    "_shards": {
+        "total": 1,
+        "successful": 1,
+        "skipped": 0,
+        "failed": 0
+    },
+    "hits": {
+        "total": {
+            "value": 5,
+            "relation": "eq"
+        },
+        "max_score": 1.0,
+        "hits": [
+            {
+                "_index": "shopping",
+                "_id": "1003",
+                "_score": 1.0,
+                "_source": {
+                    "title": "苹果手机1",
+                    "category": "苹果",
+                    "images": "http://www.gulixueyuan.com/xm.jpg",
+                    "price": 8999.00
+                }
+            },
+            {
+                "_index": "shopping",
+                "_id": "1001",
+                "_score": 1.0,
+                "_source": {
+                    "title": "小米手机",
+                    "category": "小米",
+                    "images": "http://www.gulixueyuan.com/xm.jpg",
+                    "price": 3999.00
+                }
+            },
+            {
+                "_index": "shopping",
+                "_id": "1002",
+                "_score": 1.0,
+                "_source": {
+                    "title": "华为手机",
+                    "category": "华为",
+                    "images": "http://www.gulixueyuan.com/xm.jpg",
+                    "price": 6999.00
+                }
+            },
+            {
+                "_index": "shopping",
+                "_id": "1005",
+                "_score": 1.0,
+                "_source": {
+                    "title": "苹果手机3",
+                    "category": "苹果",
+                    "images": "http://www.gulixueyuan.com/xm.jpg",
+                    "price": 10999.00
+                }
+            },
+            {
+                "_index": "shopping",
+                "_id": "1004",
+                "_score": 1.0,
+                "_source": {
+                    "title": "苹果手机2",
+                    "category": "苹果",
+                    "images": "http://www.gulixueyuan.com/xm.jpg",
+                    "price": 7999.00
+                }
+            }
+        ]
+    }
+}
+```
+
+先说URL带参查询，例如我想查询category是苹果的文档。
+
+发送GET请求：`http://10.40.18.40:9200/shopping/_search?q=category:苹果`
+
+得到结果：
+
+```json
+{
+    "took": 5,
+    "timed_out": false,
+    "_shards": {
+        "total": 1,
+        "successful": 1,
+        "skipped": 0,
+        "failed": 0
+    },
+    "hits": {
+        "total": {
+            "value": 3,
+            "relation": "eq"
+        },
+        "max_score": 0.7493869,
+        "hits": [
+            {
+                "_index": "shopping",
+                "_id": "1003",
+                "_score": 0.7493869,
+                "_source": {
+                    "title": "苹果手机1",
+                    "category": "苹果",
+                    "images": "http://www.gulixueyuan.com/xm.jpg",
+                    "price": 8999.00
+                }
+            },
+            {
+                "_index": "shopping",
+                "_id": "1005",
+                "_score": 0.7493869,
+                "_source": {
+                    "title": "苹果手机3",
+                    "category": "苹果",
+                    "images": "http://www.gulixueyuan.com/xm.jpg",
+                    "price": 10999.00
+                }
+            },
+            {
+                "_index": "shopping",
+                "_id": "1004",
+                "_score": 0.7493869,
+                "_source": {
+                    "title": "苹果手机2",
+                    "category": "苹果",
+                    "images": "http://www.gulixueyuan.com/xm.jpg",
+                    "price": 7999.00
+                }
+            }
+        ]
+    }
+}
+```
+
+上面我们把请求的过滤参数放到了URL里，这可能会出现一些中文乱码现象，也容易出现不安全因素。所以我们可以给请求参数放到请求体的JSON里，同样使用GET请求。
+
+我们发送GET请求：`http://10.40.18.40:9200/shopping/_search`，在请求体中放以下参数：
+
+```json
+{
+	"query":{
+		"match":{
+			"category":"苹果"
+		}
+	}
+}
+```
+
+查询到的结果和上面内容是一致的。
+
+同样，查询所有文档内容，也可以在请求体里放置这样的JSON：
+
+```json
+{
+	"query":{
+		"match_all":{}
+	}
+}
+```
+
+如果想查询指定的字段，例如查看title，请求体里应该放这样的JSON：
+
+```
+{
+	"query":{
+		"match_all":{}
+	},
+	"_source":["title"]
+}
+```
+
+查询结果：
+
+```json
+{
+    "took": 28,
+    "timed_out": false,
+    "_shards": {
+        "total": 1,
+        "successful": 1,
+        "skipped": 0,
+        "failed": 0
+    },
+    "hits": {
+        "total": {
+            "value": 5,
+            "relation": "eq"
+        },
+        "max_score": 1.0,
+        "hits": [
+            {
+                "_index": "shopping",
+                "_id": "1003",
+                "_score": 1.0,
+                "_source": {
+                    "title": "苹果手机1"
+                }
+            },
+            {
+                "_index": "shopping",
+                "_id": "1001",
+                "_score": 1.0,
+                "_source": {
+                    "title": "小米手机"
+                }
+            },
+            {
+                "_index": "shopping",
+                "_id": "1002",
+                "_score": 1.0,
+                "_source": {
+                    "title": "华为手机"
+                }
+            },
+            {
+                "_index": "shopping",
+                "_id": "1004",
+                "_score": 1.0,
+                "_source": {
+                    "title": "苹果手机2"
+                }
+            },
+            {
+                "_index": "shopping",
+                "_id": "1005",
+                "_score": 1.0,
+                "_source": {
+                    "title": "苹果手机3"
+                }
+            }
+        ]
+    }
+}
+```
+
+ES也支持分页查询，同样的请求URL，只需要改一下请求体JSON即可：
+
+```json
+{
+	"query":{
+		"match_all":{}
+	},
+	"from":0,
+	"size":2
+}
+```
+
+返回结果：
+
+```json
+{
+    "took": 7,
+    "timed_out": false,
+    "_shards": {
+        "total": 1,
+        "successful": 1,
+        "skipped": 0,
+        "failed": 0
+    },
+    "hits": {
+        "total": {
+            "value": 5,
+            "relation": "eq"
+        },
+        "max_score": 1.0,
+        "hits": [
+            {
+                "_index": "shopping",
+                "_id": "1003",
+                "_score": 1.0,
+                "_source": {
+                    "title": "苹果手机1",
+                    "category": "苹果",
+                    "images": "http://www.gulixueyuan.com/xm.jpg",
+                    "price": 8999.00
+                }
+            },
+            {
+                "_index": "shopping",
+                "_id": "1001",
+                "_score": 1.0,
+                "_source": {
+                    "title": "小米手机",
+                    "category": "小米",
+                    "images": "http://www.gulixueyuan.com/xm.jpg",
+                    "price": 3999.00
+                }
+            }
+        ]
+    }
+}
+```
+
+同样，也支持排序操作，只需要修改请求体的JSON，例如我们以价格的倒序排序：
+
+```json
+{
+	"query":{
+		"match_all":{}
+	},
+	"sort":{
+		"price":{
+			"order":"desc"
+		}
+	}
+}
+```
+
+返回的结果：
+
+```json
+{
+    "took": 2,
+    "timed_out": false,
+    "_shards": {
+        "total": 1,
+        "successful": 1,
+        "skipped": 0,
+        "failed": 0
+    },
+    "hits": {
+        "total": {
+            "value": 5,
+            "relation": "eq"
+        },
+        "max_score": null,
+        "hits": [
+            {
+                "_index": "shopping",
+                "_id": "1005",
+                "_score": null,
+                "_source": {
+                    "title": "苹果手机3",
+                    "category": "苹果",
+                    "images": "http://www.gulixueyuan.com/xm.jpg",
+                    "price": 10999.00
+                },
+                "sort": [
+                    10999.0
+                ]
+            },
+            {
+                "_index": "shopping",
+                "_id": "1003",
+                "_score": null,
+                "_source": {
+                    "title": "苹果手机1",
+                    "category": "苹果",
+                    "images": "http://www.gulixueyuan.com/xm.jpg",
+                    "price": 8999.00
+                },
+                "sort": [
+                    8999.0
+                ]
+            },
+            {
+                "_index": "shopping",
+                "_id": "1004",
+                "_score": null,
+                "_source": {
+                    "title": "苹果手机2",
+                    "category": "苹果",
+                    "images": "http://www.gulixueyuan.com/xm.jpg",
+                    "price": 7999.00
+                },
+                "sort": [
+                    7999.0
+                ]
+            },
+            {
+                "_index": "shopping",
+                "_id": "1002",
+                "_score": null,
+                "_source": {
+                    "title": "华为手机",
+                    "category": "华为",
+                    "images": "http://www.gulixueyuan.com/xm.jpg",
+                    "price": 6999.00
+                },
+                "sort": [
+                    6999.0
+                ]
+            },
+            {
+                "_index": "shopping",
+                "_id": "1001",
+                "_score": null,
+                "_source": {
+                    "title": "小米手机",
+                    "category": "小米",
+                    "images": "http://www.gulixueyuan.com/xm.jpg",
+                    "price": 3999.00
+                },
+                "sort": [
+                    3999.0
+                ]
+            }
+        ]
+    }
+}
+```
+
