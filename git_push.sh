@@ -3,7 +3,7 @@
 read -p "Enter commit message: " message
 
 if [[ -z "$message" ]]; then
-    message="使用自动化脚本进行默认更新"
+    message="默认的更新信息"
 fi
 
 git add .
