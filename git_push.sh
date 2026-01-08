@@ -1,9 +1,9 @@
 #!/bin/bash
 
-read -p "Enter commit message: " message
+read -p "Enter commit message (leave empty for default): " message
 
 if [[ -z "$message" ]]; then
-    message="默认的更新信息"
+    message="Mundo的默认提交信息"
 fi
 
 git add .
